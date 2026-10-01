@@ -1,0 +1,108 @@
+/*
+ * tokens.css — Echelon Dashboard Design Tokens
+ *
+ * All CSS custom properties live here.
+ * Change values in this file to retheme the entire dashboard — no other CSS
+ * files need to be touched for brand or colour changes.
+ *
+ * Imported via @import layer(tokens) in assets/css/dashboard.css.
+ */
+
+:root {
+    /* ── Brand ─────────────────────────────────────────────────────── */
+    --primary-color:        #005eb8;   /* Alcon deep blue               */
+    --primary-dark:         #003595;   /* Alcon dark blue — matches unity_dashboard.html header/footer */
+    --primary-light:        #43bfe9;
+    --secondary-color:      #147ca8;
+    --accent-color:         #00aeef;   /* Alcon cyan                     */
+
+    /* ── Backgrounds ───────────────────────────────────────────────── */
+    --bg-page:              #080d14;
+    --bg-card:              #111a24;
+    --bg-secondary:         #182431;
+    --bg-elevated:          #1e2c3a;
+    --bg-overlay:           rgba(2, 7, 12, 0.76);
+
+    /* ── Text ──────────────────────────────────────────────────────── */
+    --text-color:           #f2f6fa;
+    --text-muted:           #a6b5c4;
+    --text-inverse:         #ffffff;
+    --border-color:         #314254;
+    --border-subtle:        rgba(166, 181, 196, 0.18);
+    --chart-gridline:       rgba(166, 181, 196, 0.16);
+    --chart-label:          #c8d3de;
+    --focus-color:          #ffd166;
+
+    /* ── Semantic colours ──────────────────────────────────────────── */
+    --color-success:        #73d6a3;
+    --color-warning:        #ffd166;
+    --color-danger:         #ff7b72;
+    --color-info:           #6ccff6;
+
+    /* ── Spacing scale ─────────────────────────────────────────────── */
+    --space-xs:  4px;
+    --space-sm:  8px;
+    --space-md:  16px;
+    --space-lg:  24px;
+    --space-xl:  40px;
+
+    /* ── Border radius ─────────────────────────────────────────────── */
+    --radius-sm:   6px;
+    --radius-md:   8px;
+    --radius-lg:   8px;
+    --radius-pill: 99px;
+
+    /* ── Elevation (box-shadow) ────────────────────────────────────── */
+    --shadow-sm:     0 4px 12px rgba(0,0,0,0.20);
+    --shadow-md:     0 12px 30px rgba(0,0,0,0.28);
+    --shadow-lg:     0 18px 42px rgba(0,0,0,0.36);
+    --shadow-header: 0 8px 28px rgba(0,0,0,0.46);
+
+    /* ── Typography ────────────────────────────────────────────────── */
+    --font-body:      'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-base: 14px;
+
+    /* ── Layout ────────────────────────────────────────────────────── */
+    --header-height: 83px;
+    --tab-bar-top:   var(--header-height);   /* sticky offset = header height */
+    --tab-bar-height: 55px;
+    --tab-bar-bg:    rgba(8, 13, 20, 0.94);
+
+    /* ── Tab colours ───────────────────────────────────────────────── */
+    --tab-inactive-bg:  transparent;
+    --tab-active-bg:    #147ca8;
+    --tab-hover-bg:     rgba(67, 191, 233, 0.12);
+    --tab-active-hover-bg: #126f97;
+    --nav-control-size: 34px;
+    --nav-rail-width: 108px;
+
+    /* Okabe-Ito categorical palette. */
+    --chart-1: #56b4e9;
+    --chart-2: #e69f00;
+    --chart-3: #009e73;
+    --chart-4: #f0e442;
+    --chart-5: #0072b2;
+    --chart-6: #d55e00;
+    --chart-7: #cc79a7;
+    --chart-8: #b8c2cc;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+    --bg-page: #eef3f8;
+    --bg-card: #ffffff;
+    --bg-secondary: #f4f7fa;
+    --bg-elevated: #ffffff;
+    --bg-overlay: rgba(12, 24, 38, 0.58);
+    --text-color: #17212b;
+    --text-muted: #526678;
+    --border-color: #c7d3df;
+    --border-subtle: rgba(23, 33, 43, 0.13);
+    --chart-gridline: rgba(23, 33, 43, 0.12);
+    --chart-label: #34495c;
+    --tab-bar-bg: rgba(238, 243, 248, 0.94);
+    --tab-hover-bg: rgba(20, 124, 168, 0.10);
+    --shadow-sm: 0 4px 12px rgba(26, 52, 77, 0.08);
+    --shadow-md: 0 12px 30px rgba(26, 52, 77, 0.12);
+    --shadow-lg: 0 18px 42px rgba(26, 52, 77, 0.16);
+}

@@ -1,0 +1,23 @@
+{
+    "name": "Echelon Dashboard",
+    "short_name": "Dashboard",
+    "description": "Echelon enterprise HTML dashboard template",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#003a75",
+    "theme_color": "#005eb8",
+    "icons": [
+        {
+            "src": "assets/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "assets/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

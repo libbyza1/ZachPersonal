@@ -1,0 +1,355 @@
+{
+  "source": "adl_enriched_gbl_cf_qualytics_lvlims",
+  "environment": "prod",
+  "extractedAt": "2026-10-01T16:52:46.980968+00:00",
+  "asOf": "2026-10-01",
+  "historyStart": "2023-10-01",
+  "initialStart": "2024-10-01",
+  "queryId": "05102fa0-1f2e-4388-b2e6-83ebb868e019",
+  "criteriaQueryId": "a907d771-56d2-40e1-86bb-c2764cbef5ad",
+  "criteriaCount": 92,
+  "rowsWithoutCriteria": 1903,
+  "sourceSha256": "b4e5323f4581ab7a72b447b67500b866faec3396701c661bc2db0025ddb3c7c7",
+  "rowCount": 53157,
+  "counts": {
+    "WFI | LAL Endotoxin | EU/mL": {
+      "rows": 1928,
+      "initialWindow": 1308,
+      "released": 1803,
+      "missing": 125,
+      "censored": 1803
+    },
+    "WFI | Micro Count | CFU/ml": {
+      "rows": 1923,
+      "initialWindow": 1312,
+      "released": 1796,
+      "missing": 127,
+      "censored": 0
+    },
+    "PW | Micro Count | CFU/ml": {
+      "rows": 2358,
+      "initialWindow": 1472,
+      "released": 1987,
+      "missing": 371,
+      "censored": 0
+    },
+    "PW-South | Micro Count | CFU/ml": {
+      "rows": 1733,
+      "initialWindow": 1011,
+      "released": 1441,
+      "missing": 292,
+      "censored": 0
+    },
+    "Pretreatment-South | Micro Count | CFU/ml": {
+      "rows": 168,
+      "initialWindow": 117,
+      "released": 150,
+      "missing": 18,
+      "censored": 0
+    },
+    "Pretreatment-North | Coliforms | Not supplied": {
+      "rows": 164,
+      "initialWindow": 112,
+      "released": 152,
+      "missing": 12,
+      "censored": 0
+    },
+    "Pretreatment-North | Micro Count | CFU/ml": {
+      "rows": 163,
+      "initialWindow": 112,
+      "released": 151,
+      "missing": 12,
+      "censored": 0
+    },
+    "PW | Conductivity Stage 1 | µS/cm": {
+      "rows": 4125,
+      "initialWindow": 2781,
+      "released": 3957,
+      "missing": 168,
+      "censored": 0
+    },
+    "PW | Clarity | Not supplied": {
+      "rows": 486,
+      "initialWindow": 332,
+      "released": 468,
+      "missing": 18,
+      "censored": 0
+    },
+    "PW | Color | Not supplied": {
+      "rows": 486,
+      "initialWindow": 332,
+      "released": 468,
+      "missing": 18,
+      "censored": 0
+    },
+    "PW-South | TOC | ppb": {
+      "rows": 5380,
+      "initialWindow": 3593,
+      "released": 5106,
+      "missing": 274,
+      "censored": 0
+    },
+    "PW-South | Conductivity Stage 1 | µS/cm": {
+      "rows": 5403,
+      "initialWindow": 3596,
+      "released": 5130,
+      "missing": 273,
+      "censored": 0
+    },
+    "PW-South | Clarity | Not supplied": {
+      "rows": 835,
+      "initialWindow": 515,
+      "released": 758,
+      "missing": 77,
+      "censored": 0
+    },
+    "PW-South | Color | Not supplied": {
+      "rows": 835,
+      "initialWindow": 515,
+      "released": 758,
+      "missing": 77,
+      "censored": 0
+    },
+    "Pretreatment-South | TOC | ppb": {
+      "rows": 158,
+      "initialWindow": 113,
+      "released": 146,
+      "missing": 12,
+      "censored": 0
+    },
+    "Pretreatment-South | Conductivity Stage 1 | µS/cm": {
+      "rows": 179,
+      "initialWindow": 133,
+      "released": 166,
+      "missing": 13,
+      "censored": 0
+    },
+    "Pretreatment-South | Clarity | Not supplied": {
+      "rows": 159,
+      "initialWindow": 114,
+      "released": 147,
+      "missing": 12,
+      "censored": 0
+    },
+    "Pretreatment-South | Color | Not supplied": {
+      "rows": 159,
+      "initialWindow": 114,
+      "released": 147,
+      "missing": 12,
+      "censored": 0
+    },
+    "PW | Nitrates | Not supplied": {
+      "rows": 452,
+      "initialWindow": 317,
+      "released": 434,
+      "missing": 18,
+      "censored": 0
+    },
+    "PW-South | Nitrates | Not supplied": {
+      "rows": 737,
+      "initialWindow": 473,
+      "released": 712,
+      "missing": 25,
+      "censored": 0
+    },
+    "PW | TOC | ppb": {
+      "rows": 4121,
+      "initialWindow": 2779,
+      "released": 3954,
+      "missing": 167,
+      "censored": 0
+    },
+    "WFI | TOC | ppb": {
+      "rows": 1460,
+      "initialWindow": 974,
+      "released": 1406,
+      "missing": 54,
+      "censored": 0
+    },
+    "WFI | Conductivity Stage 1 | µS/cm": {
+      "rows": 1460,
+      "initialWindow": 974,
+      "released": 1406,
+      "missing": 54,
+      "censored": 0
+    },
+    "Pretreatment-North | Clarity | Not supplied": {
+      "rows": 21,
+      "initialWindow": 15,
+      "released": 14,
+      "missing": 7,
+      "censored": 0
+    },
+    "Pretreatment-North | Color | Not supplied": {
+      "rows": 21,
+      "initialWindow": 15,
+      "released": 14,
+      "missing": 7,
+      "censored": 0
+    },
+    "Pretreatment-North | TOC | ppb": {
+      "rows": 2,
+      "initialWindow": 1,
+      "released": 2,
+      "missing": 0,
+      "censored": 0
+    },
+    "CS-North | LAL Endotoxin | EU/mL": {
+      "rows": 463,
+      "initialWindow": 303,
+      "released": 417,
+      "missing": 46,
+      "censored": 417
+    },
+    "CS-South | LAL Endotoxin | EU/mL": {
+      "rows": 1417,
+      "initialWindow": 905,
+      "released": 1232,
+      "missing": 185,
+      "censored": 1232
+    },
+    "CS-South | TOC | ppb": {
+      "rows": 2547,
+      "initialWindow": 1559,
+      "released": 1986,
+      "missing": 561,
+      "censored": 0
+    },
+    "CS-South | Nitrates | Not supplied": {
+      "rows": 554,
+      "initialWindow": 399,
+      "released": 538,
+      "missing": 16,
+      "censored": 0
+    },
+    "CS-South | Conductivity Stage 1 | µS/cm": {
+      "rows": 2544,
+      "initialWindow": 1549,
+      "released": 1983,
+      "missing": 561,
+      "censored": 0
+    },
+    "CS-North | Clarity | Not supplied": {
+      "rows": 1289,
+      "initialWindow": 762,
+      "released": 1033,
+      "missing": 256,
+      "censored": 0
+    },
+    "CS-North | Color | Not supplied": {
+      "rows": 1289,
+      "initialWindow": 762,
+      "released": 1033,
+      "missing": 256,
+      "censored": 0
+    },
+    "CS-North | Nitrates | Not supplied": {
+      "rows": 313,
+      "initialWindow": 215,
+      "released": 303,
+      "missing": 10,
+      "censored": 0
+    },
+    "CS-South | Clarity | Not supplied": {
+      "rows": 2541,
+      "initialWindow": 1546,
+      "released": 1980,
+      "missing": 561,
+      "censored": 0
+    },
+    "CS-South | Color | Not supplied": {
+      "rows": 2541,
+      "initialWindow": 1546,
+      "released": 1980,
+      "missing": 561,
+      "censored": 0
+    },
+    "CS-North | TOC | ppb": {
+      "rows": 1288,
+      "initialWindow": 766,
+      "released": 1032,
+      "missing": 256,
+      "censored": 0
+    },
+    "CS-North | Conductivity Stage 1 | µS/cm": {
+      "rows": 1289,
+      "initialWindow": 762,
+      "released": 1033,
+      "missing": 256,
+      "censored": 0
+    },
+    "CS-North | Conductivity Stage 2 | µS/cm": {
+      "rows": 10,
+      "initialWindow": 3,
+      "released": 10,
+      "missing": 0,
+      "censored": 0
+    },
+    "CS-North | Conductivity Stage 3 | µS/cm": {
+      "rows": 5,
+      "initialWindow": 2,
+      "released": 5,
+      "missing": 0,
+      "censored": 0
+    },
+    "PW-South | Conductivity Stage 2 | µS/cm": {
+      "rows": 11,
+      "initialWindow": 3,
+      "released": 11,
+      "missing": 0,
+      "censored": 0
+    },
+    "PW-South | Conductivity Stage 3 | µS/cm": {
+      "rows": 5,
+      "initialWindow": 1,
+      "released": 5,
+      "missing": 0,
+      "censored": 0
+    },
+    "Pretreatment-South | Conductivity Stage 2 | µS/cm": {
+      "rows": 56,
+      "initialWindow": 51,
+      "released": 54,
+      "missing": 2,
+      "censored": 0
+    },
+    "Pretreatment-South | Conductivity Stage 3 | µS/cm": {
+      "rows": 38,
+      "initialWindow": 35,
+      "released": 38,
+      "missing": 0,
+      "censored": 0
+    },
+    "Pretreatment-South | Nitrates | Not supplied": {
+      "rows": 4,
+      "initialWindow": 3,
+      "released": 4,
+      "missing": 0,
+      "censored": 0
+    },
+    "CS-South | Conductivity Stage 2 | µS/cm": {
+      "rows": 20,
+      "initialWindow": 15,
+      "released": 20,
+      "missing": 0,
+      "censored": 0
+    },
+    "CS-South | Conductivity Stage 3 | µS/cm": {
+      "rows": 14,
+      "initialWindow": 10,
+      "released": 14,
+      "missing": 0,
+      "censored": 0
+    },
+    "PW | Conductivity Stage 2 | µS/cm": {
+      "rows": 3,
+      "initialWindow": 2,
+      "released": 3,
+      "missing": 0,
+      "censored": 0
+    }
+  },
+  "dateBasis": "Collection date when present; otherwise LIMS event date (not a verified collection date). Source timezone unspecified. No creation-date fallback.",
+  "eventDatedRows": 37584,
+  "limitsApplied": false
+}

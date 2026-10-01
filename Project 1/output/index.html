@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FWN Validations Test Function 4 Terminal</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/vendor/tabulator-5.5.0.min.css">
+    <style>
+        body { padding: 0; letter-spacing: 0; }
+        body * { letter-spacing: 0; }
+        .terminal-header { display: flex; gap: 24px; align-items: center; padding: 24px 32px; border-bottom: 3px solid var(--primary-color); background: var(--bg-card); }
+        .terminal-header img { width: 76px; height: 52px; object-fit: contain; background: var(--primary-dark); border-radius: 4px; }
+        .terminal-header h1 { font-size: 23px; line-height: 1.3; margin: 0; max-width: 670px; color: var(--text-color); text-shadow: none; }
+        .terminal-header p { color: var(--text-muted); margin: 5px 0 0; }
+        .refresh-meta { margin-left: auto; font-size: 12px; line-height: 1.7; text-align: right; }
+        .refresh-meta .action { margin-top: 6px; }
+        #refresh-status { display: block; max-width: 320px; overflow-wrap: anywhere; }
+        .dashboard-tabs { position: static; margin: 0; padding: 12px 32px; border-radius: 0; flex-wrap: wrap; gap: 12px; }
+        .utility-selector { display: grid; gap: 5px; min-width: 0; max-width: 100%; font-size: 12px; color: var(--text-muted); }
+        .utility-selector select { width: 300px; max-width: 100%; min-height: 40px; padding: 6px 9px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-card); color: var(--text-color); font: inherit; }
+        #dashboard-content { padding: 0 32px 28px; }
+        .charts-grid { display: block; }
+        .controls-band { padding: 22px 0 16px; border-bottom: 1px solid var(--border-color); }
+        .eyebrow { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+        .line-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .line-buttons button, .action { border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-color); border-radius: 4px; padding: 8px 12px; min-height: 36px; font: inherit; cursor: pointer; }
+        .line-buttons button[aria-pressed="true"] { background: var(--primary-color); color: var(--text-inverse); border-color: var(--primary-color); }
+        .audit-content-buttons { max-height: 180px; overflow: auto; padding: 4px; }
+        .audit-content-buttons button { max-width: 100%; overflow-wrap: anywhere; text-align: left; }
+        .control-row { display: flex; flex-wrap: wrap; align-items: end; gap: 14px; }
+        .control-row label { display: grid; gap: 5px; font-size: 12px; color: var(--text-muted); }
+        .control-row select, .control-row input[type="text"] { min-height: 36px; padding: 6px 9px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-color); border-radius: 4px; font: inherit; }
+        .control-row input[type="text"] { width: 132px; }
+        .control-row .check { display: flex; align-items: center; min-height: 36px; }
+        .control-row .downloads { margin-left: auto; display: flex; gap: 6px; }
+        .date-range { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 14px; }
+        .date-range label { display: grid; gap: 4px; color: var(--text-muted); font-size: 12px; }
+        input[type="range"] { width: 100%; accent-color: var(--primary-color); }
+        .quality-band { margin: 16px 0; padding: 12px 16px; border-left: 4px solid var(--color-warning); background: var(--bg-secondary); line-height: 1.6; font-size: 12px; }
+        .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid var(--border-color); padding: 4px 0 20px; gap: 20px; }
+        .metric { min-width: 0; }
+        .metric h3 { font-size: 12px; font-weight: 500; color: var(--text-muted); margin: 0 0 8px; }
+        .metric strong { display: block; font-size: 25px; font-weight: 600; overflow-wrap: anywhere; }
+        .metric small { display: block; margin-top: 6px; color: var(--text-muted); line-height: 1.5; }
+        .acceptance { grid-column: span 2; min-width: 0; }
+        .acceptance h3 { font-size: 14px; margin: 0 0 8px; }
+        .acceptance-list { max-height: 210px; overflow: auto; padding-right: 8px; }
+        .acceptance-entry { padding: 8px 0; border-bottom: 1px solid var(--border-subtle); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+        .acceptance-entry strong { display: block; font-size: 13px; }
+        .acceptance-entry ul { padding-left: 18px; margin: 4px 0; }
+        .acceptance small { color: var(--text-muted); font-size: 11px; }
+        .visuals { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px; padding: 22px 0; }
+        .visuals section { min-width: 0; }
+        .section-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+        h2 { font-size: 16px; margin: 0; font-weight: 600; }
+        .info { width: 20px; height: 20px; flex: 0 0 20px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-muted); font: bold 12px Georgia, serif; cursor: help; }
+        .plot { height: 310px; min-width: 0; }
+        .legend, .selection-note { font-size: 12px; color: var(--text-muted); margin: 8px 0; line-height: 1.5; }
+        .insights { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 18px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .insights h3 { font-size: 12px; margin: 0 0 8px; color: var(--primary-color); }
+        .insights p { margin: 0; font-size: 12px; line-height: 1.7; }
+        .table-band { padding-top: 20px; }
+        .table-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+        .table-heading .action { margin-left: auto; }
+        .tabulator { font-size: 12px; background: var(--bg-card); color: var(--text-color); border-color: var(--border-color); }
+        .tabulator .tabulator-header, .tabulator .tabulator-header .tabulator-col, .tabulator .tabulator-footer { background: var(--bg-secondary); color: var(--text-color); border-color: var(--border-color); }
+        .tabulator .tabulator-row { background: var(--bg-card); color: var(--text-color); }
+        .tabulator .tabulator-row:nth-child(even) { background: var(--bg-secondary); }
+        .tabulator .tabulator-row.tabulator-selected { outline: 2px solid var(--primary-color); outline-offset: -2px; }
+        .tabulator input { color: var(--text-color); background: var(--bg-card); border: 1px solid var(--border-color); max-width: 100%; }
+        .tabulator .tabulator-footer .tabulator-page { color: var(--text-color); }
+        .tabulator-row.quality-row { border-left: 4px solid var(--color-warning); }
+        dialog { width: min(780px, calc(100% - 32px)); max-height: 85vh; padding: 24px; background: var(--bg-card); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; }
+        dialog::backdrop { background: var(--bg-overlay); }
+        dialog header { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+        dialog dl { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 10px; font-size: 13px; }
+        dialog dt { color: var(--text-muted); }
+        dialog dd { margin: 0; overflow-wrap: anywhere; }
+        .footer { border-radius: 0; font-size: 12px; }
+        .empty { display: grid; place-items: center; color: var(--text-muted); text-align: center; }
+        :focus-visible { outline: 3px solid var(--focus-color); outline-offset: 3px; }
+        @media (max-width: 800px) {
+            .terminal-header { padding: 16px; flex-wrap: wrap; gap: 12px; }
+            .terminal-header h1 { font-size: 19px; }
+            .terminal-header > div:nth-child(2) { flex: 1; }
+            .refresh-meta { width: 100%; text-align: left; margin: 0; }
+            #dashboard-content { padding: 0 16px 20px; }
+            .dashboard-tabs { padding: 12px 16px; }
+            .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .visuals, .insights { grid-template-columns: 1fr; }
+            .control-row .downloads { margin-left: 0; }
+            .date-range { grid-template-columns: 1fr; gap: 8px; }
+            dialog dl { grid-template-columns: 1fr; gap: 5px; }
+            dialog dd { margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="terminal-header">
+        <img src="assets/images/ST_logo.png" alt="Alcon Smart Technology">
+        <div><h1 id="dashboard-title">FWN Validations Test Function 4 Terminal</h1><p id="dashboard-subtitle">Fort Worth North | Water quality</p></div>
+        <div class="refresh-meta"><strong>Refresh Date</strong><br><time id="refresh-date"></time><br><span id="snapshot-label"></span><br><button class="action" id="refresh-data" type="button" title="Re-query production samples and linked specifications">&#8635; Refresh</button><span id="refresh-status" role="status" aria-live="polite"></span></div>
+    </header>
+    <nav class="dashboard-tabs" aria-label="Utility and cycle audit views">
+        <label class="utility-selector" for="utility-select">Critical Utility<select id="utility-select"></select></label>
+        <label class="utility-selector" for="sterilizer-select">Sterilizers<select id="sterilizer-select" aria-controls="audit-view"></select></label>
+        <label class="utility-selector" for="oven-select">Ovens<select id="oven-select" aria-controls="audit-view"></select></label>
+        <div class="display-controls"><button id="theme-toggle" class="display-icon-btn" type="button" aria-label="Switch theme" title="Switch theme"><span aria-hidden="true"></span></button></div>
+    </nav>
+    <main id="dashboard-content"></main>
+    <dialog id="sample-detail" aria-labelledby="sample-title">
+        <header><h2 id="sample-title">Sample detail</h2><button class="action" id="close-detail" aria-label="Close details" title="Close details">&#215;</button></header>
+        <dl id="sample-fields"></dl>
+        <button class="action" id="drill-line">View this sampling location</button>
+    </dialog>
+    <footer class="footer">Smart Technology Team | Alcon | Production snapshot | <span id="current-year"></span></footer>
+    <script src="assets/vendor/apexcharts-3.54.1.min.js"></script>
+    <script src="assets/vendor/papaparse-5.4.1.min.js"></script>
+    <script src="assets/vendor/tabulator-5.5.0.min.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/filters.js"></script>
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/charts.js"></script>
+    <script src="data/water-results.js"></script>
+    <script src="data/cycle-audits.js"></script>
+    <script id="terminal-logic">
+    'use strict';
+    let SOURCE = window.FWN_WATER;
+    let AUDITS = window.FWN_AUDITS;
+    const DASHBOARD_CONFIG = {
+        title: 'FWN Validations Test Function 4 Terminal',
+        subtitle: 'Fort Worth North | Utilities and cycle audits',
+        refreshDate: SOURCE.metadata.extractedAt,
+        tabs: [{id: 'WFI', label: 'Water for Injection'}, {id: 'PW', label: 'Purified Water'},
+            {id: 'CS-North', label: 'Clean Steam North'}, {id: 'CS-South', label: 'Clean Steam South'},
+            {id: 'Pretreatment-North', label: 'North Pretreatment'}, {id: 'Pretreatment-South', label: 'South Pretreatment'},
+            {id: 'PW-South', label: 'South PW Generation Systems'}],
+        filters: [], data: SOURCE
+    };
+    const utilityOptions = [...DASHBOARD_CONFIG.tabs].sort((left, right) => left.label.localeCompare(right.label, 'en', {sensitivity: 'base'}));
+    const esc = DashboardUtils.escHtml;
+    const DAY = 86400000;
+    const timestamp = date => Date.parse(date + 'T00:00:00Z');
+    const iso = date => date.toISOString().slice(0, 10);
+    const number = value => value === null || !Number.isFinite(value) ? 'N/A' : value.toLocaleString('en-US', {maximumFractionDigits: 4});
+    const percent = (numerator, denominator) => denominator ? (100 * numerator / denominator).toFixed(1) + '%' : 'N/A';
+    const states = {};
+    const categoricalTests = new Set(['Nitrates', 'Coliforms', 'Color', 'Clarity']);
+    const categoriesFor = rows => [...new Set(rows.filter(row => !row.missing).map(row => row.raw))].sort();
+    const mean = rows => {
+        const values = rows.filter(row => row.value !== null && !row.censored).map(row => row.value);
+        return values.length ? values.reduce((total, value) => total + value, 0) / values.length : null;
+    };
+    function validDate(value) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+        const parsed = timestamp(value);
+        return Number.isFinite(parsed) && iso(new Date(parsed)) === value;
+    }
+    function defaultDates(today = new Date()) {
+        const end = iso(today);
+        const start = new Date(timestamp(end));
+        const month = start.getUTCMonth();
+        start.setUTCFullYear(start.getUTCFullYear() - 2);
+        if (start.getUTCMonth() !== month) start.setUTCDate(0);
+        return {start: iso(start), end};
+    }
+    function selectRows(water, state, withDates = true) {
+        return SOURCE.rows.filter(row => row.water === water && state.lines.includes(row.line) && row.test === state.test && row.units === state.units
+            && (!state.collectionOnly || Boolean(row.collectedAt))
+            && (!state.released || row.released) && (!withDates || row.date >= state.start && row.date <= state.end));
+    }
+    function changeText(current, previous) {
+        if (current === null || previous === null) return 'N/A';
+        const delta = current - previous;
+        return (delta > 0 ? '+' : '') + number(delta) + (previous !== 0 ? ' (' + (delta / previous * 100).toFixed(1) + '%)' : ' (baseline zero)');
+    }
+    function periodComparisons(water, state) {
+        const history = selectRows(water, state, false);
+        const end = timestamp(state.end) + DAY;
+        return [['WoW', 7], ['MoM', 30], ['QoQ', 90], ['YoY', 365]].map(([label, days]) => {
+            const cut = end - days * DAY;
+            const current = mean(history.filter(row => timestamp(row.date) >= cut && timestamp(row.date) < end));
+            const previous = mean(history.filter(row => timestamp(row.date) >= cut - days * DAY && timestamp(row.date) < cut));
+            return label + ': ' + changeText(current, previous);
+        }).join(' | ');
+    }
+    function info(text) { return '<button class="info" type="button" title="' + esc(text) + '" aria-label="' + esc(text) + '">i</button>'; }
+    function setup(water, previous) {
+        const rows = SOURCE.rows.filter(row => row.water === water);
+        const lines = [...new Set(rows.map(row => row.line))].sort();
+        const preferred = water === 'WFI' ? 'North WFI Loop (272)' : water === 'PW-South' ? 'Line 10 (1001)' : 'Line 16 HPWS (530)';
+        const dates = defaultDates();
+        const state = states[water] = {lines: lines.length ? [lines.includes(preferred) ? preferred : lines[0]] : [], test: water === 'Pretreatment-North' ? 'Coliforms' : 'TOC', units: water === 'Pretreatment-North' ? 'Not supplied' : 'ppb', ...dates, released: true, collectionOnly: false, month: null, ...previous, hiddenSamples: new Set(), selected: null, chart: null, bars: null, table: null};
+        state.lines = state.lines.filter(line => lines.includes(line));
+        const grid = document.getElementById(water + '-grid');
+        grid.innerHTML = `
+            <section class="controls-band" aria-label="${water} selection">
+                <div class="table-heading"><div class="eyebrow">SAMPLING LOCATIONS</div><button class="action" id="${water}-select-all" type="button">Select All</button></div><div class="line-buttons" id="${water}-lines" role="group" aria-label="Selected sampling locations"></div>
+                <div class="control-row">
+                    <label>Test / unit<select id="${water}-test"></select></label>
+                    <label>Date basis<select id="${water}-date-basis"><option value="event">Collection, otherwise event date</option><option value="collection">Collection date only</option></select></label>
+                    <label>Month<select id="${water}-month"><option value="">All selected dates</option></select></label>
+                    <label>From (YYYY-MM-DD)<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" maxlength="10" id="${water}-start" value="${state.start}" required></label>
+                    <label>Through (YYYY-MM-DD)<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" maxlength="10" id="${water}-end" value="${state.end}" required></label>
+                    <button class="action" id="${water}-reset">Last two years</button>
+                    <label class="check"><input type="checkbox" id="${water}-released" checked>Released results only</label>
+                    <div class="downloads"><button class="action" id="${water}-csv" title="Download current table as CSV">&#8595; CSV</button><button class="action" id="${water}-json" title="Download current table and provenance as JSON">&#8595; JSON</button></div>
+                </div>
+                <div class="date-range"><label>Range start <input type="range" id="${water}-from-slider" aria-label="${water} range start"></label><label>Range end <input type="range" id="${water}-to-slider" aria-label="${water} range end"></label></div>
+                <p class="selection-note" id="${water}-range" aria-live="polite"></p>
+            </section>
+            <aside class="quality-band" id="${water}-quality"></aside>
+            <section class="metrics" id="${water}-metrics" aria-label="Selected result metrics"></section>
+            <div class="visuals">
+                <section><div class="section-heading"><h2 id="${water}-trend-title">Sample trend</h2>${info('Collection date when present; otherwise LIMS event date in the combined mode. Event date is not a verified collection date. One test and unit per graph; reported bounds are not exact measurements. Right-click a point to hide it from this graph only.')}<button class="action" id="${water}-restore-samples" type="button" hidden>Show all hidden samples</button></div><div class="plot" id="${water}-trend"></div><p class="selection-note" id="${water}-hidden-note" role="status"></p><p class="legend" id="${water}-legend"></p></section>
+                <section><div class="section-heading"><h2>Monthly result count</h2>${info('Combined counts for the selected test and sampling locations. A month selection filters the trend, metrics and table; percentages use the full selected date range.')}</div><div class="plot" id="${water}-monthly"></div><p class="legend" id="${water}-monthly-note"></p></section>
+            </div>
+            <section class="insights" id="${water}-insights"></section>
+            <section class="table-band"><div class="table-heading"><h2>Source results</h2>${info('One source result per row. Trend date uses collection date, otherwise event date. Both original timestamps and date basis are preserved. Creation date is never used. Blank values remain missing.')}
+                <span id="${water}-table-count" class="selection-note"></span><button class="action" id="${water}-clear">Clear selection and table filters</button></div><div id="${water}-table"></div></section>`;
+        const lineHost = document.getElementById(water + '-lines');
+        for (const line of lines) {
+            const button = document.createElement('button');
+            button.textContent = line;
+            button.type = 'button';
+            button.setAttribute('aria-pressed', String(state.lines.includes(line)));
+            button.addEventListener('click', () => setLine(water, line, true));
+            lineHost.appendChild(button);
+        }
+        state.table = new Tabulator('#' + water + '-table', {
+            height: 385, layout: 'fitDataStretch', pagination: true, paginationSize: 20,
+            paginationSizeSelector: [20, 50, 100], selectable: 1, index: 'id',
+            placeholder: 'No source results in this selection',
+            initialSort: [{column: 'sampleAt', dir: 'desc'}],
+            rowFormatter: row => row.getElement().classList.toggle('quality-row', row.getData().missing || !row.getData().released),
+            columns: [
+                {title: 'Detail', field: 'detail', width: 72, headerSort: false, formatter: () => '<button class="action" title="Open sample detail" aria-label="Open sample detail">&#8599;</button>', cellClick: (event, cell) => openSample(water, cell.getRow().getData())},
+                {title: 'Trend date', field: 'sampleAt', width: 188, headerFilter: 'input', formatter: 'plaintext'},
+                {title: 'Date basis', field: 'dateBasis', width: 220, headerFilter: 'input', formatter: 'plaintext'},
+                {title: 'Sample', field: 'sampleId', width: 170, headerFilter: 'input', formatter: 'plaintext'},
+                {title: 'Sampling location', field: 'line', width: 190, headerFilter: 'input', formatter: 'plaintext'},
+                {title: 'Result', field: 'raw', width: 110, headerFilter: 'input', formatter: 'plaintext'},
+                {title: 'Units', field: 'units', width: 100, headerFilter: 'input', formatter: 'plaintext'},
+                {title: 'Test', field: 'test', width: 175, headerFilter: 'input', formatter: 'plaintext'},
+                {title: 'Point', field: 'point', width: 135, headerFilter: 'input', formatter: 'plaintext'},
+                {title: 'Released', field: 'released', width: 100, headerFilter: 'input', formatter: 'plaintext'},
+                {title: 'Status', field: 'status', width: 125, headerFilter: 'input', formatter: 'plaintext'}
+            ]
+        });
+        state.table.on('tableBuilt', () => render(water));
+        state.table.on('dataFiltered', (filters, rows) => { document.getElementById(water + '-table-count').textContent = rows.length + ' visible rows'; });
+        document.getElementById(water + '-restore-samples').addEventListener('click', () => {
+            state.hiddenSamples.clear();
+            drawTrend(water, state.visible);
+        });
+        document.getElementById(water + '-test').addEventListener('change', event => {
+            [state.test, state.units] = JSON.parse(event.target.value); state.month = null; render(water);
+        });
+        document.getElementById(water + '-month').addEventListener('change', event => { state.month = event.target.value || null; render(water); });
+        document.getElementById(water + '-date-basis').addEventListener('change', event => { state.collectionOnly = event.target.value === 'collection'; state.month = null; render(water); });
+        for (const part of ['start', 'end']) document.getElementById(water + '-' + part).addEventListener('change', event => {
+            if (!validDate(event.target.value)) {
+                event.target.setCustomValidity('Enter a valid calendar date in YYYY-MM-DD format.');
+                event.target.reportValidity();
+                return;
+            }
+            event.target.setCustomValidity('');
+            state[part] = event.target.value;
+            if (state.start > state.end) state[part === 'start' ? 'end' : 'start'] = state[part];
+            state.month = null; syncDates(water); render(water);
+        });
+        for (const [name, part] of [['from', 'start'], ['to', 'end']]) document.getElementById(water + '-' + name + '-slider').addEventListener('input', event => {
+            state[part] = iso(new Date(Number(event.target.value) * DAY));
+            if (state.start > state.end) state[part === 'start' ? 'end' : 'start'] = state[part];
+            state.month = null; syncDates(water); render(water);
+        });
+        document.getElementById(water + '-reset').addEventListener('click', () => { Object.assign(state, defaultDates(), {month: null}); syncDates(water); render(water); });
+        document.getElementById(water + '-released').addEventListener('change', event => { state.released = event.target.checked; render(water); });
+        document.getElementById(water + '-clear').addEventListener('click', () => { state.month = null; state.selected = null; state.table.clearHeaderFilter(); state.table.deselectRow(); render(water); });
+        for (const format of ['csv', 'json']) document.getElementById(water + '-' + format).addEventListener('click', () => download(water, format));
+        document.getElementById(water + '-select-all').addEventListener('click', () => {
+            state.lines = [...lines];
+            state.month = null; state.selected = null;
+            for (const button of lineHost.children) button.setAttribute('aria-pressed', 'true');
+            state.table.clearHeaderFilter(); updateTests(water); render(water);
+        });
+        document.getElementById(water + '-released').checked = state.released;
+        document.getElementById(water + '-date-basis').value = state.collectionOnly ? 'collection' : 'event';
+        updateTests(water); syncDates(water);
+    }
+    function setLine(water, line, toggle = false) {
+        const state = states[water];
+        state.lines = toggle ? (state.lines.includes(line) ? state.lines.filter(selected => selected !== line) : [...state.lines, line]) : [line];
+        state.month = null; state.selected = null;
+        for (const button of document.getElementById(water + '-lines').children) button.setAttribute('aria-pressed', String(state.lines.includes(button.textContent)));
+        state.table.clearHeaderFilter(); updateTests(water); render(water);
+    }
+    function updateTests(water) {
+        const state = states[water];
+        const options = [...new Set(SOURCE.rows.filter(row => row.water === water).map(row => JSON.stringify([row.test, row.units])))];
+        let selected = JSON.stringify([state.test, state.units]);
+        if (!options.length) options.push(selected);
+        if (!options.includes(selected)) selected = options[0];
+        [state.test, state.units] = JSON.parse(selected);
+        const select = document.getElementById(water + '-test');
+        select.replaceChildren(...options.map(key => { const option = document.createElement('option'); option.value = key; option.textContent = JSON.parse(key).join(' / '); return option; }));
+        select.value = selected;
+    }
+    function syncDates(water) {
+        const state = states[water];
+        for (const part of ['start', 'end']) {
+            const field = document.getElementById(water + '-' + part);
+            field.value = state[part]; field.setCustomValidity('');
+        }
+        for (const [name, part] of [['from', 'start'], ['to', 'end']]) {
+            const slider = document.getElementById(water + '-' + name + '-slider');
+            slider.min = timestamp(SOURCE.metadata.historyStart) / DAY;
+            slider.max = Math.max(timestamp(defaultDates().end), timestamp(state.end)) / DAY;
+            slider.step = 1; slider.value = timestamp(state[part]) / DAY;
+            slider.setAttribute('aria-valuetext', state[part]);
+        }
+    }
+    function render(water) {
+        const state = states[water];
+        const rangeRows = selectRows(water, state);
+        const monthSelect = document.getElementById(water + '-month');
+        const months = [...new Set(rangeRows.map(row => row.date.slice(0, 7)))].sort();
+        monthSelect.replaceChildren(...['', ...months].map(month => { const option = document.createElement('option'); option.value = month; option.textContent = month || 'All selected dates'; return option; }));
+        monthSelect.value = state.month || '';
+        const rows = rangeRows.filter(row => !state.month || row.date.startsWith(state.month));
+        state.visible = rows;
+        const sorted = [...rows].sort((left, right) => left.sampleAt.localeCompare(right.sampleAt));
+        const latest = sorted.at(-1);
+        const censored = rows.filter(row => row.censored).length;
+        const recorded = rows.filter(row => !row.missing).length;
+        const previous = latest ? sorted.filter(row => row.line === latest.line && row.id !== latest.id).at(-1) : null;
+        const latestKnown = selectRows(water, state, false).filter(row => !row.missing).sort((left, right) => left.date.localeCompare(right.date)).at(-1);
+        const age = latestKnown ? Math.round((timestamp(SOURCE.metadata.asOf) - timestamp(latestKnown.date)) / DAY) : null;
+        const missingLocations = state.lines.filter(line => !rows.some(row => row.line === line));
+        document.getElementById(water + '-range').textContent = state.start + ' through ' + state.end + ' | ' + (state.month ? 'Selected month: ' + state.month + ' | ' : '') + (state.lines.join(', ') || 'No sampling locations selected') + (missingLocations.length ? ' | No matching results: ' + missingLocations.join(', ') : '');
+        const eventRows = rows.filter(row => !row.collectedAt).length;
+        document.getElementById(water + '-quality').textContent = (state.collectionOnly ? 'Collection-date-only mode: results missing collection dates are excluded. ' : 'Date basis: collection date where present; otherwise LIMS event date. ' + number(eventRows) + ' selected rows (' + percent(eventRows, rows.length) + ') use event dates, not verified collection dates. ') + 'Latest recorded result for this selection: ' + (latestKnown?.date || 'none') + (age !== null ? ' (' + age + ' days before snapshot).' : '.') + ' Snapshot only; no compliance assessment.' + (state.test === 'Micro Count' ? ' Micro Count is microbiological monitoring; no universal USP release limit is implied.' : '');
+        const metrics = [
+            ['Latest result', latest?.raw || 'N/A', (latest?.units || state.units) + ' | ' + (latest?.date || 'No samples') + (latest ? ' | ' + latest.line : ''), 'Prior sample variance (same location): ' + changeText(latest?.value ?? null, previous?.value ?? null)],
+            ['Recorded results', number(recorded), percent(recorded, rows.length) + ' of ' + rows.length + ' selected rows', 'Missing: ' + (rows.length - recorded) + ' | Censored: ' + censored]
+        ];
+        document.getElementById(water + '-metrics').innerHTML = metrics.map(([title, value, detail, note]) => '<div class="metric"><h3>' + esc(title) + ' ' + info(title + '. No compliance or sampling-frequency target is configured.') + '</h3><strong>' + esc(value) + '</strong><small>' + esc(detail) + '</small><small>' + esc(note) + '</small></div>').join('');
+        const acceptance = document.createElement('section');
+        acceptance.className = 'acceptance';
+        acceptance.setAttribute('aria-label', 'Acceptance criteria');
+        const summary = acceptanceCriteria(rows);
+        acceptance.innerHTML = '<h3>Acceptance criteria ' + info('LIMS specification expressions linked to the selected results, including historical versions and warning bands. These are not universal USP limits and no new pass/fail calculation is applied.') + '</h3><div class="acceptance-list" tabindex="0" aria-label="Source specification criteria">' + (summary.groups.map(group => '<div class="acceptance-entry"><strong>' + esc(group.limitLabel || 'No criterion label supplied') + '</strong><div>' + esc(group.specId + ' | v' + group.version) + '</div><ul>' + group.rules.map(rule => '<li>' + esc(rule) + '</li>').join('') + '</ul><small>' + esc('LIMS status: ' + (group.status || 'not supplied') + '; active: ' + (group.active || 'not supplied') + '; waived: ' + (group.waived || 'not supplied') + '; approved: ' + (group.approvedAt?.slice(0, 10) || 'not supplied') + '. ' + group.unitNote + '. Definition method version: ' + (group.definitionVersion || 'not supplied') + '; matching rule: ' + (group.matchingRule || 'not supplied')) + '</small></div>').join('') || '<p class="selection-note">' + (rows.length ? 'No linked acceptance criteria available.' : 'No selected results; acceptance criteria unavailable.') + '</p>') + '</div><small>' + esc(summary.missing + ' of ' + rows.length + ' selected results lack a usable linked limit. Source labels and bands are reproduced as stored, including differences; consult the controlled method. No compliance determination.') + '</small>';
+        document.getElementById(water + '-metrics').appendChild(acceptance);
+        document.getElementById(water + '-trend-title').textContent = state.test + ' | ' + state.units;
+        document.getElementById(water + '-legend').textContent = (categoricalTests.has(state.test) ? 'Reported categories, not numeric concentrations or calculated compliance. ' + categoriesFor(rows).map(category => category + ': ' + rows.filter(row => row.raw === category).length + ' (' + percent(rows.filter(row => row.raw === category).length, rows.length) + ')').join('; ') + '. ' : 'Series identify sampling locations and exact results or reported bounds. ' + censored + ' censored (' + percent(censored, rows.length) + '). ') + 'Date basis: ' + (state.collectionOnly ? 'collection only.' : 'collection, otherwise event.') + ' Source timezone not supplied. Comparisons pool the selected locations.';
+        document.getElementById(water + '-monthly-note').textContent = state.month ? state.month + ': ' + rows.length + ' results (' + percent(rows.length, rangeRows.length) + ' of date-range rows).' : rangeRows.length + ' results in the selected date range.';
+        document.getElementById(water + '-insights').innerHTML = '<div><h3>Observations</h3><p>' + esc(rows.length + ' results; ' + recorded + ' recorded (' + percent(recorded, rows.length) + '). ' + periodComparisons(water, state)) + '</p></div><div><h3>Assumptions</h3><p>The selected date basis defines the timeline. Event timestamps are not verified collection dates. Comparison windows are trailing 7, 30, 90 and 365 days against the preceding equal period, ending on the selected end date. N/A means insufficient exact data; no cause is inferred.</p></div><div><h3>Recommendation</h3><p>' + esc((age > 90 ? 'Confirm recent sampling and the source feed for this location. ' : 'Review sampling coverage and source records. ') + 'Resolve missing collection dates before interpreting gaps. Confirm current USP applicability with site QA; no limits are applied.') + '</p></div>';
+        state.table.setData(rows);
+        drawCharts(water, sorted, rangeRows);
+    }
+    function drawCharts(water, rows, rangeRows) {
+        drawTrend(water, rows);
+        drawMonthly(water, rangeRows);
+    }
+    function trendData(water, rows, state) {
+        const categorical = categoricalTests.has(state.test);
+        const visible = rows.filter(row => !state.hiddenSamples.has(row.id)).sort((left, right) => left.sampleAt.localeCompare(right.sampleAt));
+        const groups = locationSeries(visible, state.lines, categorical);
+        const categories = categorical ? categoriesFor(state.hiddenSamples.size ? groups.flatMap(group => group.rows) : SOURCE.rows.filter(row => row.water === water && row.test === state.test && row.units === state.units)) : [];
+        return {categorical, categories, groups};
+    }
+    function chartOptions(categorical = false) {
+        const foreground = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim();
+        const theme = document.documentElement.dataset.theme;
+        return {chart: {height: 310, animations: {enabled: false}, toolbar: {show: false}, foreColor: foreground, fontFamily: 'Segoe UI, sans-serif'}, theme: {mode: theme}, grid: {borderColor: getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim()}, dataLabels: {enabled: false}, noData: {text: categorical ? 'No recorded results in this selection' : 'No numeric results in this selection'}};
+    }
+    function drawTrend(water, rows) {
+        const state = states[water];
+        if (state.chart) state.chart.destroy();
+        const {categorical, categories, groups} = trendData(water, rows, state);
+        const seriesRows = groups.map(group => group.rows);
+        const common = chartOptions(categorical);
+        if (state.hiddenSamples.size && !groups.length) common.noData.text = 'No visible samples in this selection';
+        const host = document.getElementById(water + '-trend');
+        document.getElementById(water + '-restore-samples').hidden = !state.hiddenSamples.size;
+        document.getElementById(water + '-hidden-note').textContent = state.hiddenSamples.size ? state.hiddenSamples.size + ' sample result(s) hidden from this graph.' : '';
+        host.oncontextmenu = event => {
+            const marker = event.target.closest('.apexcharts-marker');
+            const series = marker?.closest('.apexcharts-series');
+            if (!marker || !series) return;
+            const row = seriesRows[Number(series.getAttribute('data:realIndex'))]?.[Number(marker.getAttribute('rel'))];
+            if (!row) return;
+            event.preventDefault();
+            state.hiddenSamples.add(row.id);
+            drawTrend(water, rows);
+        };
+        state.chart = new ApexCharts(host, {
+            ...common, chart: {...common.chart, type: 'scatter', zoom: {enabled: false}, events: {dataPointSelection: (event, context, config) => {
+                if (event.button === 2) return;
+                const row = seriesRows[config.seriesIndex]?.[config.dataPointIndex];
+                if (row) { state.table.selectRow(row.id); state.selected = row.id; openSample(water, row); }
+            }}}, colors: groups.map(group => group.color),
+            series: groups.map(group => ({name: group.name, data: group.rows.map(row => ({x: timestamp(row.date), y: categorical ? categories.indexOf(row.raw) : row.bound}))})),
+            legend: {position: 'bottom', height: 70},
+            markers: {size: 4, strokeWidth: 1},
+            xaxis: {type: 'datetime', ...(state.hiddenSamples.size ? {} : {min: timestamp(state.month ? state.month + '-01' : state.start), max: state.month ? Date.UTC(Number(state.month.slice(0, 4)), Number(state.month.slice(5, 7)), 1) - 1 : timestamp(state.end) + DAY - 1}), labels: {datetimeUTC: true, format: 'yyyy-MM-dd', rotate: -35}},
+            yaxis: categorical ? {title: {text: 'Reported result'}, min: 0, max: Math.max(1, categories.length - 1), tickAmount: Math.max(1, categories.length - 1), labels: {formatter: value => Number.isInteger(value) ? categories[value] || '' : ''}} : {title: {text: state.units}, decimalsInFloat: 3},
+            tooltip: {custom: ({seriesIndex, dataPointIndex}) => { const row = seriesRows[seriesIndex]?.[dataPointIndex]; return row ? '<div style="padding:10px">' + esc(row.line) + '<br>' + esc(row.sampleId) + '<br>' + esc(row.date + ': ' + row.raw + ' ' + row.units) + '<br>' + esc(row.dateBasis) + (row.censored ? '<br>Reported bound; not exact' : '') + '</div>' : ''; }}
+        });
+        state.chart.render();
+    }
+    function drawMonthly(water, rangeRows) {
+        const state = states[water];
+        if (state.bars) state.bars.destroy();
+        const common = chartOptions();
+        const counts = new Map();
+        const cursor = new Date(timestamp(state.start)); cursor.setUTCDate(1);
+        while (iso(cursor) <= state.end && counts.size < 240) { counts.set(iso(cursor).slice(0, 7), 0); cursor.setUTCMonth(cursor.getUTCMonth() + 1); }
+        for (const row of rangeRows) counts.set(row.date.slice(0, 7), (counts.get(row.date.slice(0, 7)) || 0) + 1);
+        const months = [...counts.keys()].sort();
+        state.bars = new ApexCharts(document.getElementById(water + '-monthly'), {
+            ...common, chart: {...common.chart, type: 'bar', events: {dataPointSelection: (event, context, config) => { const month = months[config.dataPointIndex]; if (month) { state.month = state.month === month ? null : month; render(water); } }}},
+            series: [{name: 'Results', data: months.map(month => counts.get(month))}], colors: ['#009e73'],
+            plotOptions: {bar: {columnWidth: '65%', borderRadius: 1}},
+            xaxis: {categories: months, labels: {rotate: -65, hideOverlappingLabels: true}},
+            yaxis: {title: {text: 'Results'}, min: 0, decimalsInFloat: 0},
+            tooltip: {y: {formatter: value => value + ' results (' + percent(value, rangeRows.length) + ')'}}
+        });
+        state.bars.render();
+    }
+    function acceptanceCriteria(rows, catalog = SOURCE.criteria || []) {
+        const groups = new Map();
+        let missing = 0;
+        for (const row of rows) {
+            let usable = false;
+            for (const index of row.criteria || []) {
+                const criterion = catalog[index];
+                if (!criterion) continue;
+                const units = criterion.units || row.units;
+                const unitNote = criterion.units ? 'Specification units: ' + units : 'Specification units not supplied; result units: ' + units;
+                const key = JSON.stringify([criterion.specId, criterion.version, criterion.status, criterion.active, criterion.waived, criterion.limitLabel, criterion.definitionVersion, criterion.matchingRule, unitNote]);
+                if (!groups.has(key)) groups.set(key, {...criterion, unitNote, rules: []});
+                const expression = [criterion.operator1 && criterion.value1 !== null ? criterion.operator1 + ' ' + criterion.value1 : '', criterion.operator2 && criterion.value2 !== null ? criterion.operator2 + ' ' + criterion.value2 : ''].filter(Boolean).join(' and ');
+                if (expression && criterion.label) usable = true;
+                const rule = (criterion.label || 'Unmapped limit') + ': ' + (expression || 'Expression unavailable');
+                const group = groups.get(key);
+                if (!group.rules.includes(rule)) group.rules.push(rule);
+            }
+            if (!usable) missing++;
+        }
+        return {groups: [...groups.values()], missing};
+    }
+    function locationSeries(rows, lines, categorical = false) {
+        const palette = ['#0072b2', '#009e73', '#d55e00', '#cc79a7', '#b77900', '#56b4e9', '#666666'];
+        const locations = [...new Set(SOURCE.rows.map(row => row.line))].sort();
+        return lines.flatMap(line => (categorical ? [false] : [false, true]).map(censored => ({
+            name: line + (categorical ? ' | Reported category' : censored ? ' | Reported bound' : ' | Exact result'),
+            color: palette[locations.indexOf(line) % palette.length],
+            rows: rows.filter(row => row.line === line && (categorical ? !row.missing : row.bound !== null && row.censored === censored))
+        })).filter(group => group.rows.length));
+    }
+    function openSample(water, row) {
+        const dialog = document.getElementById('sample-detail');
+        const fields = {'Sample': row.sampleId, 'Trend date': row.sampleAt, 'Date basis': row.dateBasis,
+            'Collection date': row.collectedAt || 'Not recorded', 'Event date': row.eventAt || 'Not recorded', 'Utility system': DASHBOARD_CONFIG.tabs.find(tab => tab.id === water)?.label || water,
+            'Location': row.line, 'Sample point': row.point, 'Description': row.description,
+            'Location path': row.location, 'Parameter': row.test, 'Result': row.raw || 'Missing',
+            'Units': row.units, 'Operator': row.operator || 'None', 'Qualifier': row.qualifier || 'None',
+            'Interpretation': row.censored ? 'Reported bound; excluded from mean' : 'Source value; no compliance assessment',
+            'Released': row.released ? 'Yes' : 'No', 'Sample status': row.status, 'Method': row.method,
+            'Version / variant': row.version + ' / ' + row.variant, 'Dataset / replicate': row.dataset + ' / ' + row.replicate,
+            'Source query': SOURCE.metadata.queryId,
+            'Specification query': SOURCE.metadata.criteriaQueryId || 'Not available'};
+        document.getElementById('sample-title').textContent = row.sampleId;
+        document.getElementById('sample-fields').innerHTML = Object.entries(fields).map(([key, value]) => '<dt>' + esc(key) + '</dt><dd>' + esc(value ?? '') + '</dd>').join('');
+        document.getElementById('drill-line').textContent = 'View this sampling location';
+        document.getElementById('drill-line').onclick = () => { dialog.close(); setLine(water, row.line); document.getElementById(water + '-test').focus(); };
+        dialog.showModal();
+    }
+    function download(water, format) {
+        const state = states[water];
+        const rows = state.table.getData('active');
+        const text = format === 'csv' ? Papa.unparse(rows.map(row => ({...row, criteria: JSON.stringify((row.criteria || []).map(index => SOURCE.criteria[index]))})), {escapeFormulae: true}) : JSON.stringify({metadata: SOURCE.metadata, criteria: SOURCE.criteria || [], selection: {water, lines: state.lines, test: state.test, units: state.units, start: state.start, end: state.end, month: state.month, releasedOnly: state.released, collectionOnly: state.collectionOnly}, rows}, null, 2);
+        const url = URL.createObjectURL(new Blob([text], {type: format === 'csv' ? 'text/csv;charset=utf-8' : 'application/json'}));
+        const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'FWN-' + water + '-' + state.test.replace(/\W+/g, '-') + '-' + state.start + '.' + format;
+        anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    DashboardCharts._buildTabs = () => { for (const tab of DASHBOARD_CONFIG.tabs) setup(tab.id); };
+    const auditStates = {};
+    let activeAudit = null;
+    let auditTable = null;
+    let auditTrend = null;
+    let auditMonthly = null;
+    const auditSelectId = kind => kind === 'Oven' ? 'oven-select' : 'sterilizer-select';
+    function downloadAudit(filename, text, type) {
+        const url = URL.createObjectURL(new Blob([text], {type}));
+        const anchor = document.createElement('a'); anchor.href = url; anchor.download = filename;
+        anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    const auditContent = row => (row.cycleDescription || '').trim().replace(/\s+/g, ' ').toUpperCase();
+    function auditContentOptions(equipment) {
+        return [...new Set(AUDITS.rows.filter(row => row.kind === 'Sterilizer' && (!equipment || row.equipment === equipment))
+            .map(auditContent))].sort((left, right) => left.localeCompare(right, 'en'));
+    }
+    function auditRows(kind, state, withMonth = true) {
+        return AUDITS.rows.filter(row => row.kind === kind && (!state.equipment || row.equipment === state.equipment)
+            && (kind !== 'Sterilizer' || state.contents == null || state.contents.includes(auditContent(row)))
+            && row.date >= state.start && row.date <= state.end && (!withMonth || !state.month || row.date.startsWith(state.month)));
+    }
+    function auditSummary(rows) {
+        const failed = rows.filter(row => row.outcome === 'FAIL').length;
+        return {total: rows.length, failed, passed: rows.length - failed, rate: rows.length ? failed / rows.length * 100 : null};
+    }
+    function auditComparison(kind, state, days) {
+        const end = timestamp(state.end) + DAY;
+        if (iso(new Date(end - 2 * days * DAY)) < AUDITS.metadata.historyStart) return 'N/A';
+        const current = auditSummary(auditRows(kind, {...state, start: iso(new Date(end - days * DAY)), month: null}));
+        const previous = auditSummary(auditRows(kind, {...state, start: iso(new Date(end - 2 * days * DAY)), end: iso(new Date(end - days * DAY - DAY)), month: null}));
+        return current.rate === null || previous.rate === null ? 'N/A' : number(current.rate - previous.rate) + ' pp';
+    }
+    function showAuditDetail(row) {
+        document.getElementById('sample-title').textContent = row.equipment + ' | ' + row.outcome;
+        const fields = {Sample: row.sample, 'Cycle description': row.description, Equipment: row.equipment,
+            'Equipment basis': row.equipmentBasis, 'Equipment attribute (reference only)': row.equipmentRaw, 'Test date': row.date, 'Date basis': row.dateBasis,
+            'Cycle contents': row.cycleDescription, 'Audit result': row.outcome, 'Sample status': row.status,
+            'Cycle methods': row.methods.join(' | '), 'Matching nonblank results': row.sourceResultCount,
+            'Source result identities': row.sourceResults.map(result => [result.method, result.version, result.variant, result.dataset, result.parameter, result.parameterType, result.replicate].join(' / ')).join(' | ')};
+        document.getElementById('sample-fields').innerHTML = Object.entries(fields).map(([key, value]) => '<dt>' + esc(key) + '</dt><dd>' + esc(String(value || 'Not supplied')) + '</dd>').join('');
+        const drill = document.getElementById('drill-line');
+        drill.textContent = 'View this equipment';
+        drill.onclick = () => {
+            document.getElementById('sample-detail').close();
+            activateAudit(row.kind, row.equipment);
+        };
+        document.getElementById('sample-detail').showModal();
+    }
+    function populateAuditSelectors() {
+        for (const kind of ['Sterilizer', 'Oven']) {
+            const select = document.getElementById(auditSelectId(kind));
+            const selected = select.value;
+            const equipment = [...new Map(AUDITS.rows.filter(row => row.kind === kind).map(row => [row.equipment, row.number])).entries()].sort((left, right) => left[1] - right[1]);
+            select.innerHTML = '<option value="">Select ' + kind.toLowerCase() + '</option><option value="all">All ' + kind.toLowerCase() + 's</option>'
+                + equipment.map(([label]) => '<option value="' + esc(label) + '">' + esc(label) + '</option>').join('');
+            select.value = selected;
+        }
+    }
+    function activateAudit(kind, equipment) {
+        activeAudit = kind;
+        const state = auditStates[kind] ||= {...defaultDates(), equipment: '', month: null};
+        if (kind === 'Sterilizer') {
+            state.contentSelections ||= {};
+            state.contentSelections[state.equipment] = state.contents ?? null;
+        }
+        state.equipment = equipment === 'all' ? '' : equipment;
+        if (kind === 'Sterilizer') state.contents = state.contentSelections[state.equipment] ?? null;
+        state.month = null;
+        document.getElementById('utility-select').value = '';
+        for (const other of ['Sterilizer', 'Oven']) document.getElementById(auditSelectId(other)).value = other === kind ? state.equipment || 'all' : '';
+        document.querySelectorAll('.tab-content').forEach(panel => { panel.hidden = true; panel.classList.remove('active'); });
+        const panel = document.getElementById('audit-view');
+        panel.hidden = false;
+        panel.setAttribute('aria-label', kind + ' cycle audits');
+        buildAuditView();
+    }
+    function buildAuditView() {
+        auditTable?.destroy(); auditTrend?.destroy(); auditMonthly?.destroy();
+        auditTable = auditTrend = auditMonthly = null;
+        const state = auditStates[activeAudit];
+        if (activeAudit === 'Sterilizer' && state.contents != null) {
+            const available = auditContentOptions(state.equipment);
+            state.contents = state.contents.filter(content => available.includes(content));
+        }
+        document.getElementById('audit-view').innerHTML = `
+            <section class="controls-band"><div class="section-heading"><h2 id="audit-title"></h2>${info('One released, nonblank PASS or FAIL per LIMS sample ID across all cycle types. Blanks and other outcomes are excluded. Trend date is the recorded TEST DATE, not the sample creation date.')}</div>
+            ${activeAudit === 'Sterilizer' ? `<div class="table-heading"><div class="eyebrow">CYCLE CONTENTS</div>${info('Source Cycle Description, grouped by case and whitespace only. Differently worded contents remain separate; blank descriptions are Not supplied. Selections apply to charts, counts, comparisons and exports.')}<button class="action" id="audit-content-all" type="button">Select All</button><button class="action" id="audit-content-none" type="button">Clear All</button></div><div class="line-buttons audit-content-buttons" id="audit-contents" role="group" aria-label="Selected cycle contents"></div><p class="selection-note" id="audit-content-count" role="status"></p>` : ''}
+            <div class="control-row"><label>From (YYYY-MM-DD)<input id="audit-start" type="text" value="${state.start}" maxlength="10" required></label>
+            <label>Through (YYYY-MM-DD)<input id="audit-end" type="text" value="${state.end}" maxlength="10" required></label>
+            <label>Month<select id="audit-month"></select></label><button class="action" id="audit-reset">Last two years</button>
+            <div class="downloads"><button class="action" id="audit-csv" title="Download filtered audit samples">&#8595; CSV</button><button class="action" id="audit-json" title="Download audit samples and provenance">&#8595; JSON</button></div></div>
+            <div class="date-range"><label>Range start<input id="audit-from-slider" type="range" aria-label="Audit range start"></label><label>Range end<input id="audit-to-slider" type="range" aria-label="Audit range end"></label></div>
+            <p class="selection-note" id="audit-range" role="status"></p></section>
+            <aside class="quality-band" id="audit-quality"></aside><section class="metrics" id="audit-metrics" aria-label="Audited cycle summary"></section>
+            <div class="visuals"><section><div class="section-heading"><h2>Pass/Fail cycle audits</h2>${info('Each marker is one sample. Click a marker to inspect its source audit. Multiple cycles on the same date may overlap.')}</div><div class="plot" id="audit-trend"></div><p class="legend">Pass: blue | Fail: orange. Recorded test date (YYYY-MM-DD).</p></section>
+            <section><div class="section-heading"><h2>Monthly audited cycles</h2>${info('Pass and Fail counts, not request rows. Select a month to filter the trend, summary, and table.')}</div><div class="plot" id="audit-monthly"></div><p class="legend" id="audit-month-note"></p></section></div>
+            <section class="insights" id="audit-insights"></section><section class="table-band"><div class="table-heading"><h2>Audited samples</h2>${info('One row per sample. Table filters also apply to downloads. The headline summary follows equipment, cycle contents, dates and month, independently of table header filters.')}<button class="action" id="audit-clear">Clear month and table filters</button></div><div id="audit-table"></div></section>`;
+        if (activeAudit === 'Sterilizer') {
+            const options = auditContentOptions(state.equipment);
+            const host = document.getElementById('audit-contents');
+            for (const content of options) {
+                const button = document.createElement('button');
+                button.type = 'button'; button.textContent = content || 'Not supplied';
+                button.dataset.content = content;
+                button.onclick = () => {
+                    const selected = state.contents ?? options;
+                    state.contents = selected.includes(content) ? selected.filter(value => value !== content) : [...selected, content];
+                    state.month = null; renderAudit();
+                };
+                host.appendChild(button);
+            }
+            document.getElementById('audit-content-all').onclick = () => { state.contents = null; state.month = null; renderAudit(); };
+            document.getElementById('audit-content-none').onclick = () => { state.contents = []; state.month = null; renderAudit(); };
+        }
+        for (const edge of ['start', 'end']) {
+            document.getElementById('audit-' + edge).onchange = event => {
+                const value = event.target.value;
+                const valid = validDate(value) && (edge === 'start' ? value <= state.end : value >= state.start)
+                    && value >= AUDITS.metadata.historyStart && value <= iso(new Date());
+                event.target.setCustomValidity(valid ? '' : 'Enter an ISO date within available history, with start on or before end.');
+                if (!valid) { event.target.reportValidity(); return; }
+                state[edge] = value; state.month = null; renderAudit();
+            };
+        }
+        for (const [id, edge] of [['audit-from-slider', 'start'], ['audit-to-slider', 'end']]) {
+            const slider = document.getElementById(id);
+            slider.min = timestamp(AUDITS.metadata.historyStart) / DAY;
+            slider.max = timestamp(iso(new Date())) / DAY;
+            slider.step = 1;
+            slider.onchange = () => {
+                state[edge] = iso(new Date(Number(slider.value) * DAY));
+                if (state.start > state.end) state[edge === 'start' ? 'end' : 'start'] = state[edge];
+                state.month = null; renderAudit();
+            };
+        }
+        document.getElementById('audit-month').onchange = event => { state.month = event.target.value || null; renderAudit(); };
+        document.getElementById('audit-reset').onclick = () => { Object.assign(state, defaultDates(), {month: null}); renderAudit(); };
+        document.getElementById('audit-clear').onclick = () => { state.month = null; auditTable.clearHeaderFilter(); renderAudit(); };
+        document.getElementById('audit-csv').onclick = () => {
+            const rows = auditTable.getData('active').map(({sourceResults, ...row}) => ({...row, methods: row.methods.join(' | ')}));
+            downloadAudit('cycle-audits.csv', Papa.unparse(rows, {escapeFormulae: true}), 'text/csv');
+        };
+        document.getElementById('audit-json').onclick = () => downloadAudit('cycle-audits.json', JSON.stringify({metadata: AUDITS.metadata, selection: state, rows: auditTable.getData('active')}, null, 2), 'application/json');
+        auditTable = new Tabulator('#audit-table', {data: [], layout: 'fitColumns', height: 410,
+            pagination: 'local', paginationSize: 20, paginationSizeSelector: [20, 50, 100],
+            placeholder: 'No audited cycles', initialSort: [{column: 'date', dir: 'desc'}],
+            columnDefaults: {headerFilter: 'input', minWidth: 120, formatter: 'plaintext'},
+            columns: [{title: 'Test date', field: 'date'}, {title: 'Equipment', field: 'equipment'},
+                {title: 'Sample', field: 'sample', minWidth: 170}, {title: 'Cycle', field: 'description'},
+                {title: 'Pass/Fail', field: 'outcome'}, {title: 'Cycle contents', field: 'cycleDescription'},
+                {title: 'Details', headerFilter: false, formatter: () => '<button class="action" type="button">Details</button>', cellClick: (event, cell) => showAuditDetail(cell.getRow().getData())}],
+            rowFormatter: row => row.getElement().classList.toggle('quality-row', row.getData().outcome === 'FAIL')});
+        auditTable.on('tableBuilt', renderAudit);
+    }
+    function renderAudit() {
+        if (!activeAudit || document.getElementById('audit-view').hidden || !auditTable) return;
+        const state = auditStates[activeAudit];
+        if (activeAudit === 'Sterilizer') {
+            const buttons = [...document.querySelectorAll('#audit-contents button')];
+            for (const button of buttons) button.setAttribute('aria-pressed', String(state.contents == null || state.contents.includes(button.dataset.content)));
+            const selected = buttons.filter(button => button.getAttribute('aria-pressed') === 'true').length;
+            document.getElementById('audit-content-count').textContent = selected + ' of ' + buttons.length + ' cycle contents selected';
+        }
+        const rangeRows = auditRows(activeAudit, state, false);
+        const months = [...new Set(rangeRows.map(row => row.date.slice(0, 7)))].sort();
+        if (state.month && !months.includes(state.month)) state.month = null;
+        const rows = auditRows(activeAudit, state);
+        const summary = auditSummary(rows);
+        document.getElementById('audit-title').textContent = (state.equipment || 'All ' + activeAudit.toLowerCase() + 's') + ' | Cycle audits';
+        document.getElementById('audit-month').innerHTML = '<option value="">All selected dates</option>' + months.map(month => '<option>' + month + '</option>').join('');
+        document.getElementById('audit-month').value = state.month || '';
+        for (const edge of ['start', 'end']) {
+            const input = document.getElementById('audit-' + edge);
+            input.value = state[edge]; input.setCustomValidity('');
+        }
+        document.getElementById('audit-from-slider').value = timestamp(state.start) / DAY;
+        document.getElementById('audit-to-slider').value = timestamp(state.end) / DAY;
+        document.getElementById('audit-range').textContent = state.start + ' through ' + state.end + (state.month ? ' | Month: ' + state.month : '') + ' | ' + (rows.length ? number(summary.failed) + ' failed / ' + number(summary.total) + ' audited (' + percent(summary.failed, summary.total) + ')' : 'No audited cycles');
+        document.getElementById('audit-quality').textContent = 'Audit refresh: ' + new Date(AUDITS.metadata.extractedAt).toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC') + '. Snapshot through ' + AUDITS.metadata.asOf + '. History from ' + AUDITS.metadata.historyStart + '. ' + number(AUDITS.metadata.issueSamples) + ' source samples have unresolved cycle-number prefixes, dates or outcomes and are excluded across the snapshot. Blank, non-Pass/Fail and unreleased results are excluded. Equipment is assigned by cycle-number prefix; 18, 29 and 32 are ovens.';
+        const previousEnd = timestamp(state.start) - DAY;
+        const span = timestamp(state.end) - timestamp(state.start);
+        const previous = auditSummary(auditRows(activeAudit, {...state, start: iso(new Date(previousEnd - span)), end: iso(new Date(previousEnd)), month: null}));
+        const metric = (title, value, detail) => '<div class="metric"><h3>' + title + '</h3><strong>' + value + '</strong><small>' + detail + '</small></div>';
+        document.getElementById('audit-metrics').innerHTML = metric('Failed / total audited', number(summary.failed) + ' / ' + number(summary.total), activeAudit === 'Sterilizer' ? 'Unique samples; selected cycle contents' : 'Unique samples; all cycle types')
+            + metric('Failure rate', percent(summary.failed, summary.total), 'Target: N/A (not supplied)')
+            + metric('Passed cycles', number(summary.passed), percent(summary.passed, summary.total) + ' of audited samples')
+            + metric('Failure-rate change', state.month || iso(new Date(previousEnd - span)) < AUDITS.metadata.historyStart || previous.rate === null || summary.rate === null ? 'N/A' : number(summary.rate - previous.rate) + ' pp', 'Versus preceding equal-length period; N/A with month filter or incomplete baseline');
+        const comparisons = [['WoW', 7], ['MoM', 30], ['QoQ', 90], ['YoY', 365]].map(([label, days]) => label + ': ' + auditComparison(activeAudit, state, days)).join(' | ');
+        document.getElementById('audit-insights').innerHTML = '<div><h3>Observations</h3><p>' + (rows.length ? number(summary.failed) + ' failed of ' + number(summary.total) + ' audited samples (' + percent(summary.failed, summary.total) + ').' : 'No audited cycles in this selection.') + '</p></div><div><h3>Assumptions</h3><p>One sample represents one audited cycle. Only released PASS/FAIL results count. Duplicate requests do not add cycles. Conflicting outcomes are excluded. No causes or acceptance targets are inferred.</p></div><div><h3>Recommendation</h3><p>' + (summary.failed ? 'Review failed sample details and the source investigation records.' : 'Review excluded records and confirm source coverage before drawing conclusions.') + ' Failure-rate changes (percentage points), trailing windows ending ' + state.end + ': ' + esc(comparisons) + '.</p></div>';
+        auditTable.replaceData(rows);
+        auditTrend?.destroy(); auditMonthly?.destroy();
+        const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+        const colors = ['#0072B2', '#D55E00'];
+        const groups = ['PASS', 'FAIL'].map(outcome => rows.filter(row => row.outcome === outcome));
+        auditTrend = new ApexCharts(document.getElementById('audit-trend'), {
+            chart: {type: 'scatter', height: 310, animations: {enabled: false}, toolbar: {show: false}, events: {dataPointSelection: (event, chart, config) => {
+                const row = groups[config.seriesIndex]?.[config.dataPointIndex]; if (row) showAuditDetail(row);
+            }}}, series: groups.map((group, index) => ({name: index ? 'Fail' : 'Pass', data: group.map(row => ({x: timestamp(row.date), y: index ? 0 : 1}))})),
+            colors, theme: {mode: theme}, noData: {text: 'No audited cycles'}, markers: {size: 5, strokeWidth: 1},
+            xaxis: {type: 'datetime', min: timestamp(state.month ? rows[0]?.date || state.start : state.start), max: timestamp(state.month ? rows.at(-1)?.date || state.end : state.end) + DAY, labels: {format: 'yyyy-MM-dd', datetimeUTC: true}},
+            yaxis: {min: -0.2, max: 1.2, tickAmount: 7, labels: {formatter: value => Math.abs(value) < 0.05 ? 'Fail' : Math.abs(value - 1) < 0.05 ? 'Pass' : ''}},
+            tooltip: {custom: ({seriesIndex, dataPointIndex}) => {
+                const row = groups[seriesIndex]?.[dataPointIndex];
+                return row ? '<div style="padding:10px">' + esc(row.equipment + ' | ' + row.date + ' | ' + row.outcome) + '<br>' + esc(row.sample + ' | ' + row.description) + '</div>' : '';
+            }} });
+        auditTrend.render();
+        const counts = months.map(month => auditSummary(rangeRows.filter(row => row.date.startsWith(month))));
+        auditMonthly = new ApexCharts(document.getElementById('audit-monthly'), {
+            chart: {type: 'bar', stacked: true, height: 310, animations: {enabled: false}, toolbar: {show: false}, events: {dataPointSelection: (event, chart, config) => {
+                state.month = months[config.dataPointIndex] || null; renderAudit();
+            }}}, series: [{name: 'Pass', data: counts.map(count => count.passed)}, {name: 'Fail', data: counts.map(count => count.failed)}],
+            colors, theme: {mode: theme}, xaxis: {categories: months}, dataLabels: {enabled: false},
+            yaxis: {title: {text: 'Audited cycles'}, decimalsInFloat: 0}, noData: {text: 'No audited cycles'},
+            tooltip: {y: {formatter: (value, {dataPointIndex}) => number(value) + ' (' + percent(value, counts[dataPointIndex]?.total) + ')'}}});
+        auditMonthly.render();
+        document.getElementById('audit-month-note').textContent = number(rangeRows.length) + ' audited samples across the full date range. ' + (state.month ? 'Selected month: ' + state.month : 'All months selected.');
+    }
+    function setupAuditNavigation() {
+        const panel = document.createElement('section');
+        panel.id = 'audit-view'; panel.hidden = true; panel.setAttribute('role', 'region');
+        document.getElementById('dashboard-content').appendChild(panel);
+        populateAuditSelectors();
+        for (const kind of ['Sterilizer', 'Oven']) document.getElementById(auditSelectId(kind)).onchange = event => {
+            if (event.target.value) activateAudit(kind, event.target.value);
+            else if (activeAudit === kind) event.target.value = auditStates[kind].equipment || 'all';
+        };
+    }
+    function updateRefreshDate() {
+        document.getElementById('refresh-date').textContent = new Date(SOURCE.metadata.extractedAt).toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
+        document.getElementById('snapshot-label').textContent = 'Snapshot through ' + SOURCE.metadata.asOf;
+    }
+    async function waitForOkta(status) {
+        status.textContent = 'AWS session expired. Complete the Okta verification opened in your browser; the refresh will resume automatically.';
+        const deadline = Date.now() + 310000;
+        while (Date.now() < deadline) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            const response = await fetch('/api/auth', {cache: 'no-store'});
+            if (!response.ok) throw new Error('Local refresh service unavailable. Previous snapshot retained.');
+            const auth = await response.json();
+            if (auth.state === 'complete') return;
+            if (auth.state !== 'pending') throw new Error((auth.message || 'Okta verification did not complete.') + ' Previous snapshot retained.');
+        }
+        throw new Error('Okta verification timed out. Previous snapshot retained.');
+    }
+    async function refreshData() {
+        const button = document.getElementById('refresh-data');
+        const status = document.getElementById('refresh-status');
+        if (button.disabled) return;
+        if (location.protocol === 'file:') {
+            status.textContent = 'Live refresh requires the local dashboard service at http://127.0.0.1:8765/. No production query was run.';
+            return;
+        }
+        button.disabled = true; button.setAttribute('aria-busy', 'true');
+        status.textContent = 'Refreshing production samples, specifications and cycle audits...';
+        try {
+            const service = await fetch('/api/status', {cache: 'no-store'});
+            if (!service.ok) throw new Error('Local refresh service unavailable.');
+            const {refreshToken} = await service.json();
+            const requestRefresh = () => fetch('/api/refresh', {method: 'POST', headers: {'X-FWN-Refresh': refreshToken}, cache: 'no-store'});
+            let response = await requestRefresh();
+            let data = await response.json();
+            if (response.status === 401 && data.authRequired) {
+                await waitForOkta(status);
+                status.textContent = 'Okta verification complete. Refreshing production samples, specifications and cycle audits...';
+                response = await requestRefresh();
+                data = await response.json();
+            }
+            if (!response.ok) throw new Error(data.error || 'Refresh failed. Previous snapshot retained.');
+            if (!data.metadata?.extractedAt || !Array.isArray(data.rows) || !data.rows.length || !Array.isArray(data.criteria)) throw new Error('Invalid refresh response. Previous snapshot retained.');
+            if (!data.audits?.metadata?.extractedAt || !Array.isArray(data.audits.rows)) throw new Error('Audit refresh unavailable. Restart the local dashboard service.');
+            const selections = Object.fromEntries(Object.entries(states).map(([water, state]) => [water, {lines: state.lines, test: state.test, units: state.units, start: state.start, end: state.end, month: state.month, released: state.released, collectionOnly: state.collectionOnly}]));
+            for (const state of Object.values(states)) { state.chart?.destroy(); state.bars?.destroy(); state.table?.destroy(); }
+            SOURCE = data; window.FWN_WATER = data; DASHBOARD_CONFIG.data = data; DASHBOARD_CONFIG.refreshDate = data.metadata.extractedAt;
+            AUDITS = data.audits; window.FWN_AUDITS = AUDITS;
+            populateAuditSelectors();
+            if (activeAudit) buildAuditView();
+            for (const {id: water} of DASHBOARD_CONFIG.tabs) setup(water, selections[water]);
+            updateRefreshDate();
+            status.textContent = 'Production refresh complete: ' + number(data.rows.length) + ' utility results and ' + number(AUDITS.rows.length) + ' audited cycles.';
+        } catch (error) {
+            status.textContent = error.message;
+        } finally {
+            button.disabled = false; button.removeAttribute('aria-busy');
+        }
+    }
+    function setupUtilityNavigation() {
+        const select = document.getElementById('utility-select');
+        select.replaceChildren(...utilityOptions.map(tab => {
+            const option = document.createElement('option');
+            option.value = tab.id; option.textContent = tab.label;
+            return option;
+        }));
+        const placeholder = document.createElement('option');
+        placeholder.value = ''; placeholder.textContent = 'Select utility'; placeholder.disabled = true;
+        select.prepend(placeholder);
+        select.value = document.querySelector('.tab-content.active').id;
+        document.querySelectorAll('.dashboard-tab').forEach(button => button.remove());
+        const showUtility = () => {
+            if (!select.value) return;
+            activeAudit = null;
+            const auditPanel = document.getElementById('audit-view');
+            if (auditPanel) auditPanel.hidden = true;
+            for (const kind of ['Sterilizer', 'Oven']) document.getElementById(auditSelectId(kind)).value = '';
+            for (const tab of DASHBOARD_CONFIG.tabs) {
+                const panel = document.getElementById(tab.id);
+                const active = tab.id === select.value;
+                panel.classList.toggle('active', active);
+                panel.hidden = !active;
+                panel.setAttribute('role', 'region');
+                panel.removeAttribute('aria-labelledby');
+                panel.setAttribute('aria-label', tab.label);
+            }
+            select.setAttribute('aria-controls', select.value);
+            requestAnimationFrame(() => {
+                const state = states[select.value];
+                if (state?.table) { state.table.redraw(true); render(select.value); }
+            });
+        };
+        select.addEventListener('change', showUtility);
+        showUtility();
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        try { if (!localStorage.getItem('echelon-theme')) localStorage.setItem('echelon-theme', 'light'); } catch (error) { }
+        DashboardCore.init(DASHBOARD_CONFIG);
+        updateRefreshDate();
+        document.getElementById('refresh-data').addEventListener('click', refreshData);
+        DashboardCharts.init(DASHBOARD_CONFIG);
+        setupUtilityNavigation();
+        setupAuditNavigation();
+        document.getElementById('close-detail').addEventListener('click', () => document.getElementById('sample-detail').close());
+        document.getElementById('sample-detail').addEventListener('keydown', event => {
+            if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); event.currentTarget.close(); }
+        });
+        window.addEventListener('dashboardthemechange', () => { for (const water of Object.keys(states)) render(water); renderAudit(); });
+        if (location.protocol !== 'file:') refreshData();
+    });
+    window.FWN_TEST = {defaultDates, validDate, selectRows, locationSeries, trendData, categoriesFor, acceptanceCriteria, mean, changeText, states, tabs: DASHBOARD_CONFIG.tabs, utilityOptions, auditRows, auditSummary, auditStates, auditContent, auditContentOptions};
+    </script>
+</body>
+</html>

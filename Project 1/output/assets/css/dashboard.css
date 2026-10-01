@@ -1,0 +1,97 @@
+/*
+ * dashboard.css — Echelon Dashboard Template: CSS Entry Point
+ *
+ * This file is the single <link> target in index.html.
+ * It declares cascade layers, imports the split CSS files into their
+ * respective layers, and applies responsive + print overrides.
+ *
+ * Layer order (specificity tiebreak, low → high):
+ *   tokens      — CSS custom properties / design tokens
+ *   reset       — browser normalisation + body base styles
+ *   layout      — tab nav, charts grid, structural skeleton
+ *   components  — all discrete UI components
+ *   utilities   — reserved for runtime utility overrides
+ *   overrides   — responsive breakpoints and print rules
+ *
+ * Do NOT add component styles here. Edit the appropriate imported file.
+ */
+
+@layer tokens, reset, layout, components, utilities, overrides;
+
+@import url('../tokens/tokens.css') layer(tokens);
+@import url('reset.css')            layer(reset);
+@import url('layout.css')           layer(layout);
+@import url('components.css')       layer(components);
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE + PRINT OVERRIDES
+   ═══════════════════════════════════════════════════════════════════ */
+@layer overrides {
+
+    /* ── Tablets ────────────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+        .charts-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .chart-card.half-width { grid-column: span 2; }
+        .chart-card.one-third  { grid-column: span 1; }
+    }
+
+    /* ── Mobile ─────────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+        body { padding: 10px; }
+
+        .header {
+            min-height: 118px;
+            height: auto;
+            padding: 48px var(--space-sm) 40px;
+            background-size: auto 58px;
+            background-position: left top;
+        }
+
+        .header-st-logo     { height: 30px; right: 8px; top: 10px; transform: none; }
+        .header-refresh     { display: none; }
+        #dashboard-title  { max-width: calc(100% - 16px); font-size: 1.05em; line-height: 1.2; }
+
+        .charts-grid { grid-template-columns: 1fr; }
+        .panel-group { grid-template-columns: 1fr; }
+
+        .chart-card.full-width,
+        .chart-card.half-width,
+        .chart-card.one-third { grid-column: 1; }
+
+        .narrative-tooltip { max-width: 260px; }
+
+        .dashboard-tabs    { top: 0; position: relative; justify-content: flex-start; }
+        .filter-toggle-btn { margin-left: auto; }
+
+        .nav-style-control select { max-width: 160px; }
+
+        .chart-insights { flex-direction: column; }
+        .insight-col    {
+            border-right: none;
+            border-bottom: 1px solid rgba(0,0,0,0.07);
+            padding: 6px 0;
+        }
+        .insight-col:last-child { border-bottom: none; }
+
+        .modal-box { padding: var(--space-md); }
+    }
+
+    /* ── Print ──────────────────────────────────────────────────────── */
+    @media print {
+        #page-loader,
+        .filter-toggle-btn,
+        .dashboard-tabs,
+        #filterModal,
+        #detailModal { display: none !important; }
+
+        body    { background: #fff; padding: 0; }
+        .header { position: static; box-shadow: none; }
+        .tab-content { display: block !important; }
+        .chart-card  { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+    }
+
+}
+

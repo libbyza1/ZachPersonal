@@ -1,0 +1,27 @@
+/*
+ * reset.css — Echelon Dashboard Base Reset & Body
+ *
+ * Normalises browser defaults and sets the page-level typography and
+ * background.  No component styles belong here.
+ *
+ * Imported via @import layer(reset) in assets/css/dashboard.css.
+ */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    background: var(--bg-page);
+    min-height: 100vh;
+    padding: 20px;
+}
